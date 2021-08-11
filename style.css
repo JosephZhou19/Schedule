@@ -1,3 +1,4 @@
+/* general rules of the webpage*/
 * {
   margin: 0;
   padding: 0;
@@ -7,10 +8,22 @@
 
 html {
   font-size: 62.5%;
+  align-items: center;
 }
-
+.leftHalf{
+	position: absolute;
+	left: 0px;
+	width: 50%;
+}
+.rightHalf{
+	position: absolute;
+  	right: 0px;
+	width: 50%;
+	height: 100%;
+	background-color: #12121f;
+}
 .container {
-  width: 100%;
+  width: 50%;
   height: 100vh;
   background-color: #12121f;
   color: #eee;
@@ -18,12 +31,11 @@ html {
   justify-content: center;
   align-items: center;
 }
-
+/*styling for the calendar*/
 .calendar {
-  width: 45rem;
+  width: 100%;
   height: 52rem;
   background-color: #222227;
-  box-shadow: 0 0.5rem 3rem rgba(0, 0, 0, 0.4);
 }
 
 .month {
@@ -35,7 +47,6 @@ html {
   align-items: center;
   padding: 0 2rem;
   text-align: center;
-  text-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.5);
 }
 
 .month i {
@@ -67,7 +78,7 @@ html {
   font-size: 1.5rem;
   font-weight: 400;
   letter-spacing: 0.1rem;
-  width: calc(44.2rem / 7);
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -83,8 +94,7 @@ html {
 
 .days div {
   font-size: 1.4rem;
-  margin: 0.3rem;
-  width: calc(40.2rem / 7);
+  width: 14.2%;
   height: 5rem;
   display: flex;
   justify-content: center;
@@ -99,17 +109,97 @@ html {
   cursor: pointer;
 }
 
-.prev-date,
-.next-date {
+.prev-date {
   opacity: 0.5;
 }
-
+.next-date\" {
+    opacity: 50%;
+}
 .today {
   background-color: #167e56;
 }
-.todo {
-  width: 45rem;
-  height: 52rem;
-  background-color: #222227;
-  box-shadow: 0 0.5rem 3rem rgba(0, 0, 0, 0.4);
+
+/*styling for the to do list*/
+.addTask{
+	width: 100%;
+	display: flex;
+	padding: 10px 0;
+}
+.addTask > input[type="text"]{
+	width: 90%;
+	color: #333;
+	border: none;
+	border-bottom: 2px solid #666;
+	background: none;
+	padding: 10px;
+	font-size: 22px;
+	outline: none;
+}
+.addTask button{
+	margin: 0 10px;
+	background:  #222;
+	color: #fff;
+	text-transform: uppercase;
+	padding: 10px;
+	border: none;
+	outline: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+.notCompleted, .Completed{
+	margin: 5px	0;
+	padding: 20px;
+}
+h3{
+	font-size: 28px;
+	text-transform: uppercase;
+	text-align: center;
+	color: #fff;
+}
+ol{
+	list-style: none;
+	padding: 18px;
+	margin: 5px 0;
+	background-color: #222227;
+	font-size: 22px;
+	overflow:hidden;
+	overflow-y:scroll;
+	height: 30rem;
+}
+li{
+	color: #222;
+}
+ol li{
+	width: 100%;
+	padding: 18px;
+	margin: 5px 0;
+	font-size: 22px;
+}
+ol.notCompleted li{
+	background: #e96969bb;
+}
+ol.Completed li{
+	background: #00ff62;
+}
+ol li::before{
+	content: counter(my-counter);
+	background: #231381;
+	width: 2rem;
+	height: 2rem;
+	border-radius: 50%;
+	display: inline-block;
+	line-height: 2rem;
+	text-align: center;
+	color: #fff;
+	margin-right: .5rem;
+}
+li button{
+	float: right;
+	padding: 5px;
+	font-size: 28px;
+	line-height: 28px;
+	margin-right: 15px;
+	background: none;
+	outline: none;
+	cursor: pointer;
 }

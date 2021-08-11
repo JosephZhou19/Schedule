@@ -11,7 +11,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+	<!-- Section for adding the calendar-->
 	<div class="container">
+		<div class = "leftHalf">
 		<div class="calendar">
 			<div class="month">
 				<i class="fas fa-angle-left prev"></i>
@@ -32,26 +34,24 @@
         	</div>
         	<div class="days"></div>
       	</div>
-      	<div class="todo">
-      		<button>Show Graphic</button>
-    		<div class ="title">
-    			<h1>To Do List</h1>
-    		</div>
-    		<div class="list">
-    			<div class = "activity">
-    				<div>Meeting with Becky Blank</div>
-    				<div>CS200 HW Due</div>
-    				<div>Go to Anime Club</div>
-    			</div>
-    			<div class="duedate">
-    				<div>8:00 PM Today</div>
-    				<div>12:00 AM Tomorrow</div>
-    				<div>6:00 PM Thursday</div>
-    			</div>
-    		</div>
+      </div>
+      	<!-- Adding the to do list-->
+      <div class = "rightHalf">
+      	<div class ="list">
+      	<div class = "addTask">
+    		<input type="text" placeholder="Add a Task">
+    		<button>Add</button>
     	</div>
-    </div>
-    	
-    <script src="script.js"></script>
+    	<ol class = "notCompleted">
+    		<h3>Not Completed</h3>
+    	</ol>
+    	<ol class = "Completed">
+    		<h3>Completed</h3>
+    	</ol>
+       </div>
+   		</div>
+	</div>
+    <script src="calendar.js"></script>
+    <script src="tasks.js"></script>
   </body>
 </html>
