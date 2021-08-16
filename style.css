@@ -112,8 +112,8 @@ html {
 .prev-date {
   opacity: 0.5;
 }
-.next-date\" {
-    opacity: 50%;
+.next-date {
+    opacity: .5;
 }
 .today {
   background-color: #167e56;
