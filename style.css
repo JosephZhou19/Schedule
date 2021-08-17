@@ -289,3 +289,9 @@ input[name=dateTime]{
   text-decoration: none;
   cursor: pointer;
 }
+
+/*Graphic*/
+.graphic{
+	display: none;
+	height: 100%;
+}

@@ -1,3 +1,4 @@
+var tasks = [];
 //const input = document.querySelector('input');
 const btn = document.getElementById("addBtn")
 const input = document.querySelector(".taskName > input")
@@ -19,7 +20,7 @@ function addList(e){
 	undoBtn.innerHTML = '<i class="fa fa-undo"></i>'
 	if(input.value !=='' ){
 		newLi.textContent = input.value;
-		input.value ='';
+		
 		var radios = document.getElementsByName('color');
 
 		for (var i = 0, length = radios.length; i < length; i++) {
@@ -43,7 +44,9 @@ function addList(e){
 		newLi.appendChild(description);
 		newLi.appendChild(delBtn);
 		newLi.appendChild(checkBtn);
+		tasks.push([input.value, parseInt(duration), radios[i].value]);
 		modal.style.display = "none";
+		input.value ='';
 	}
 	checkBtn.addEventListener("click", function(){
 		const parent = this.parentNode;
@@ -89,4 +92,21 @@ window.onclick = function(event) {
     modal.style.display = "none";
   }
 }
-
+// Graphic
+function showGraphic(e){
+	for(var i = 0; i < tasks.length; i++){
+		var value = document.createElement("li");
+		value.innerHTML = tasks[i][0];
+		console.log(tasks[i][0]);
+		value.style.height = tasks[i][1]*100/24 + "%";
+		console.log(tasks[i][1]*100/24 + "%");
+		value.style.background = tasks[i][2];
+		document.querySelector(".graphic").appendChild(value);
+	}
+}
+var graphic = document.getElementById("graphic");
+graphic.onclick	= function(){
+	document.querySelector(".list").style.display = "none";
+	document.querySelector(".graphic").style.display = "block";
+	showGraphic();
+}
