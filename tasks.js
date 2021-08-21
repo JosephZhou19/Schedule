@@ -27,6 +27,7 @@ function addList(e){
   		if (radios[i].checked) {
     	// do whatever you want with the checked radio
     		newLi.style.background = radios[i].value;
+    		radios[i].checked = false;
     	// only one radio can be logically checked, don't check the rest
     	break;
   		}
@@ -44,10 +45,24 @@ function addList(e){
 		newLi.appendChild(description);
 		newLi.appendChild(delBtn);
 		newLi.appendChild(checkBtn);
-		tasks.push([input.value, parseInt(duration), radios[i].value]);
+		tasks.push([input.value, parseInt(duration), radios[i].value, newDate.getTime()]);
 		modal.style.display = "none";
 		input.value ='';
+		document.querySelector(".basics input[name='dateTime']").value = "";
+		document.querySelector(".basics input[name='length']").value = "";
+		document.querySelector(".description > input").value = "";
+		for(var i = 0; i < tasks.length; i++){
+			if(isFinished(tasks[i][3])){
+				const parent = document.querySelector(".notCompleted li");
+				parent.remove();
+				Completed.appendChild(parent);
+				checkBtn.remove();
+				parent.appendChild(undoBtn);
+				tasks.shift();
+			}
+		}
 	}
+	//Buttons to move the tasks to different places
 	checkBtn.addEventListener("click", function(){
 		const parent = this.parentNode;
 		parent.remove();
@@ -101,6 +116,8 @@ function showGraphic(e){
 		value.style.height = tasks[i][1]*100/24 + "%";
 		console.log(tasks[i][1]*100/24 + "%");
 		value.style.background = tasks[i][2];
+		if(isFinished(tasks[i][3]))
+			value.style.opacity = ".5";
 		document.querySelector(".graphic").appendChild(value);
 	}
 }
@@ -110,3 +127,14 @@ graphic.onclick	= function(){
 	document.querySelector(".graphic").style.display = "block";
 	showGraphic();
 }
+document.getElementById("retGraphic").onclick= function(){
+	document.querySelector(".list").style.display = "block";
+	document.querySelector(".graphic").style.display = "none";
+}
+//check time
+function isFinished(e){
+	if(e < Date.now())
+		return true;
+	return false;
+}
+	
