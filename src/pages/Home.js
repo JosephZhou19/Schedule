@@ -237,6 +237,11 @@ function Home(){
             tasks.push([todoTaskName, parseInt(duration), color, newDate.getTime()]);
             modal.style.display = "none";
         }
+        //color.current.value = "";
+        todoDate.current.value = null;
+        todoLength.current.value = null;
+        todoTaskName.current.value = null;
+        setColor('')
         //Buttons to move the tasks to different places
         checkBtn.addEventListener("click", function(){
             const parent = this.parentNode;
@@ -414,7 +419,6 @@ function Home(){
 
                             <div className="list">
                                 <div className="addTask">
-
                                     <button id="modalBtn">Add</button>
                                     <button id="graphic">Visual</button>
                                     <div id="myModal" className="modal">
@@ -467,21 +471,21 @@ function Home(){
                                                 <input type="text" placeholder="Add description"/>
                                             </div>
                                             <div onChange={event => setColor(event.target.value)} className="color">
-                                                <input type="radio" className="color" value="Red"/><label
+                                                <input type="radio" checked = {color === 'Red'} name="color" value="Red"/><label
                                                 htmlFor="Red">Red</label>
-                                                <input type="radio" className="color" value="Blue"/><label
+                                                <input type="radio" checked = {color === 'Blue'}name="color" value="Blue"/><label
                                                 htmlFor="Blue">Blue</label>
-                                                <input type="radio" className="color" value="Green"/><label
+                                                <input type="radio" checked = {color === 'Green'}name="color" value="Green"/><label
                                                 htmlFor="Green">Green</label>
-                                                <input type="radio" className="color" value="Yellow"/><label
+                                                <input type="radio" checked = {color === 'Yellow'}name="color" value="Yellow"/><label
                                                 htmlFor="Yellow">Yellow</label>
-                                                <input type="radio" className="color" value="Purple"/><label
+                                                <input type="radio"checked = {color === 'Purple'}name="color" value="Purple"/><label
                                                 htmlFor="Purple">Purple</label>
-                                                <input type="radio" className="color" value="Orange"/><label
+                                                <input type="radio" checked = {color === 'Orange'}name="color" value="Orange"/><label
                                                 htmlFor="Orange">Orange</label>
-                                                <input type="radio" className="color" value="Pink"/><label
+                                                <input type="radio" checked = {color === 'Pink'}name="color" value="Pink"/><label
                                                 htmlFor="Pink">Pink</label>
-                                                <input type="radio" className="color" value="Turquoise"/><label
+                                                <input type="radio" checked = {color ==='Turquoise'}name="color" value="Turquoise"/><label
                                                 htmlFor="Turqoise">Turquoise</label>
                                             </div>
                                             <button onClick={addList} id="addBtn">Add</button>
