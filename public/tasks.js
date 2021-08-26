@@ -20,7 +20,7 @@ function addList(e){
 	undoBtn.innerHTML = '<i class="fa fa-undo"></i>'
 	if(input.value !=='' ){
 		newLi.textContent = input.value;
-		
+
 		var radios = document.getElementsByName('color');
 
 		for (var i = 0, length = radios.length; i < length; i++) {
@@ -137,4 +137,3 @@ function isFinished(e){
 		return true;
 	return false;
 }
-	

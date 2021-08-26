@@ -119,6 +119,8 @@ const months = [
 weekDays.innerHTML = days;
 wDate = firstDayIndex;
 };
+renderCalendar();
+renderWeek();
 //sets up all the buttons between each week/month of the calendars
 document.querySelector(".week .prev").addEventListener("click", ()=>{
     wDate.setDate(wDate.getDate() - 1)    
@@ -136,8 +138,7 @@ document.querySelector(".month .next").addEventListener("click", ()=>{
 	date.setMonth(date.getMonth() + 1);
 	renderCalendar();
 });
-renderCalendar();
-renderWeek();
+
 //Allows for the swapping between calendar types
 document.querySelector(".swap button").addEventListener("click", ()=>{
     document.querySelector(".calendar").style.display = "none";
