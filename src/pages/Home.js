@@ -46,11 +46,11 @@ function Home(){
 
 
     function clickModal(e){
-        var modal = document.getElementById("myModal");
+        let modal = document.getElementById("myModal");
         modal.style.display = "block";
     }
     function unClickModal(e){
-        var modal = document.getElementById("myModal");
+        let modal = document.getElementById("myModal");
         modal.style.display = "none";
     }
     function showGraph(e){
@@ -65,7 +65,7 @@ function Home(){
     }
     let date = new Date();
     let wDate = new Date();
-    const tasks = [];
+    const [tasks, setTasks] = useState([])
     function renderCalendar(e){
         date.setDate(1);
         const monthDays = document.querySelector(".days");
@@ -186,7 +186,7 @@ function Home(){
         wDate = firstDayIndex;
     };
     function addList(e){
-        var modal = document.getElementById("myModal");
+        let modal = document.getElementById("myModal");
         const input = document.querySelector(".taskNameAdd")
         const notCompleted = document.querySelector(".notCompleted");
         const Completed = document.querySelector(".Completed");
@@ -199,9 +199,10 @@ function Home(){
         checkBtn.innerHTML = '<i class="fa fa-check"></i>'
         delBtn.innerHTML = '<i class="fa fa-trash"></i>'
         undoBtn.innerHTML = '<i class="fa fa-undo"></i>'
-        if(input.value !=='' ){
-            console.log(input.value)
-            newLi.textContent = input.value;
+        if(todoTaskName.current.value !=='' ){
+            let save = todoTaskName.current.value
+            console.log(todoTaskName)
+            newLi.textContent = todoTaskName.current.value;
 
             newLi.style.background = color;
             console.log(color);
@@ -211,7 +212,7 @@ function Home(){
             time.innerHTML += "-";
             const duration = todoLength.current.value;
             console.log(duration)
-            var newDate = new Date(dateTime.getTime() + parseInt(duration)*3600000);
+            let newDate = new Date(dateTime.getTime() + parseInt(duration)*3600000);
             time.innerHTML += newDate.toLocaleTimeString()//.substring(newDate.getTime().getIndex('t') + 1);
             console.log(time.innerHTML);
             notCompleted.appendChild(newLi);
@@ -220,7 +221,9 @@ function Home(){
             newLi.appendChild(description);
             newLi.appendChild(delBtn);
             newLi.appendChild(checkBtn);
-            tasks.push([input.value, parseInt(duration), color, newDate.getTime()]);
+            setTasks(prevTasks=>{
+                return [...prevTasks, {name: save, length: parseInt(duration), color: color, end: newDate.getTime()}]
+            })
             console.log(tasks);
             modal.style.display = "none";
         }
@@ -251,17 +254,14 @@ function Home(){
     }
     // Graphic
     function showGraphic(e){
-        console.log(tasks)
         for(let i = 0; i < tasks.length; i++){
             console.log(tasks[i]);
-            var value = document.createElement("li");
-            value.innerHTML = tasks[i][0];
-            console.log(tasks[i][0]);
-            value.style.height = tasks[i][1]*100/24 + "%";
-            console.log(tasks[i][1]*100/24 + "%");
-            value.style.background = tasks[i][2];
-            if(isFinished(tasks[i][3]))
-                value.style.opacity = ".5";
+            let value = document.createElement("li");
+            value.innerHTML = tasks[i].name;
+            console.log(tasks[i].name);
+            value.style.height = tasks[i].length*100/24 + "%";
+            console.log(tasks[i].length*100/24 + "%");
+            value.style.background = tasks[i].color;
             document.querySelector(".graphic").appendChild(value);
         }
     }
