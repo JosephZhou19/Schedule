@@ -41,46 +41,31 @@ function Home(){
             renderCalendar();
         });
         renderWeek();
-        const input = document.querySelector(".taskNameAdd")
-        // Get the modal
-        var modal = document.getElementById("myModal");
-
-// Get the button that opens the modal
-        var modalBtn = document.getElementById("modalBtn");
-
-// Get the <span> element that closes the modal
-        var span = document.getElementsByClassName("close")[0];
-
-// When the user clicks on the button, open the modal
-        modalBtn.onclick = function() {
-            modal.style.display = "block";
-        }
-
-// When the user clicks on <span> (x), close the modal
-        span.onclick = function() {
-            modal.style.display = "none";
-        }
-
-// When the user clicks anywhere outside of the modal, close it
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-        var graphic = document.getElementById("graphic");
-        graphic.onclick	= function(){
-            document.querySelector(".list").style.display = "none";
-            document.querySelector(".graphic").style.display = "block";
-            showGraphic();
-        }
-        document.getElementById("retGraphic").onclick= function(){
-            document.querySelector(".list").style.display = "block";
-            document.querySelector(".graphic").style.display = "none";
-        }
+        const input = document.querySelector(".taskNameAdd");
     })
+
+
+    function clickModal(e){
+        var modal = document.getElementById("myModal");
+        modal.style.display = "block";
+    }
+    function unClickModal(e){
+        var modal = document.getElementById("myModal");
+        modal.style.display = "none";
+    }
+    function showGraph(e){
+        document.querySelector(".list").style.display = "none";
+        document.querySelector(".graphic").style.display = "block";
+
+        showGraphic();
+    }
+    function closeGraphic(e){
+        document.querySelector(".list").style.display = "block";
+        document.querySelector(".graphic").style.display = "none";
+    }
     let date = new Date();
     let wDate = new Date();
-    var tasks = [];
+    const tasks = [];
     function renderCalendar(e){
         date.setDate(1);
         const monthDays = document.querySelector(".days");
@@ -215,6 +200,7 @@ function Home(){
         delBtn.innerHTML = '<i class="fa fa-trash"></i>'
         undoBtn.innerHTML = '<i class="fa fa-undo"></i>'
         if(input.value !=='' ){
+            console.log(input.value)
             newLi.textContent = input.value;
 
             newLi.style.background = color;
@@ -234,7 +220,8 @@ function Home(){
             newLi.appendChild(description);
             newLi.appendChild(delBtn);
             newLi.appendChild(checkBtn);
-            tasks.push([todoTaskName, parseInt(duration), color, newDate.getTime()]);
+            tasks.push([input.value, parseInt(duration), color, newDate.getTime()]);
+            console.log(tasks);
             modal.style.display = "none";
         }
         //color.current.value = "";
@@ -264,7 +251,9 @@ function Home(){
     }
     // Graphic
     function showGraphic(e){
-        for(var i = 0; i < tasks.length; i++){
+        console.log(tasks)
+        for(let i = 0; i < tasks.length; i++){
+            console.log(tasks[i]);
             var value = document.createElement("li");
             value.innerHTML = tasks[i][0];
             console.log(tasks[i][0]);
@@ -419,11 +408,11 @@ function Home(){
 
                             <div className="list">
                                 <div className="addTask">
-                                    <button id="modalBtn">Add</button>
-                                    <button id="graphic">Visual</button>
+                                    <button onClick={clickModal}id="modalBtn">Add</button>
+                                    <button onClick={showGraph} id="graphic">Visual</button>
                                     <div id="myModal" className="modal">
                                         <div className="modal-content">
-                                            <span className="close">&times;</span>
+                                            <span onClick={unClickModal} className="close">&times;</span>
                                             <p>Add your new task here</p>
                                             <div className="taskName">
                                                 <input type="text" ref={todoTaskName} className="taskNameAdd" placeholder="Name of task"/>
@@ -501,7 +490,7 @@ function Home(){
                                 </ol>
                             </div>
                             <div className="graphic">
-                                <button id="retGraphic">Visual</button>
+                                <button onClick={closeGraphic}id="retGraphic">Visual</button>
                             </div>
                         </div>
                     </div>
