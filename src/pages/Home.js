@@ -5,46 +5,60 @@ function Home(){
     const todoDate = useRef(null);
     const todoLength = useRef(null);
     const [color, setColor] = useState('');
-    function onChangeValue(event){
-        console.log(this.event.value);
-    }
+    const [tasks, setTasks] = useState([])
     useEffect(() =>{
-        console.log("ran");
         renderCalendar();
-        //Allows for the swapping between calendar types
-        document.querySelector(".swap button").addEventListener("click", ()=>{
-            document.querySelector(".calendar").style.display = "none";
-            document.querySelector(".weekCalendar").style.display = "block";
-            renderWeek();
-        });
-        document.querySelector(".swapBack button").addEventListener("click", ()=> {
-            document.querySelector(".weekCalendar").style.display = "none";
-            document.querySelector(".calendar").style.display = "block";
-            date = new Date(wDate.getFullYear(), wDate.getMonth(), 1);
-            renderCalendar();
-        });
-        //sets up all the buttons between each week/month of the calendars
-        document.querySelector(".week .prev").addEventListener("click", ()=>{
-            wDate.setDate(wDate.getDate() - 1)
-            renderWeek();
-        });
-        document.querySelector(".week .next").addEventListener("click", ()=>{
-            wDate.setDate(wDate.getDate() + 7)
-            renderWeek();
-        });
-        document.querySelector(".month .prev").addEventListener("click", ()=>{
-            date.setMonth(date.getMonth() - 1);
-            renderCalendar();
-        });
-        document.querySelector(".month .next").addEventListener("click", ()=>{
-            date.setMonth(date.getMonth() + 1);
-            renderCalendar();
-        });
         renderWeek();
         const input = document.querySelector(".taskNameAdd");
-    })
 
+    }, [])
+    const [count, setCount] = useState(0);
+    useEffect(() => {
+        console.log("useEffect")
+        const interval = setInterval(function () {
+            setCount(count + 1);
+            for(let i = 0; i < tasks.length; i++){
+                if(tasks[i].completed === false && tasks[i].end < Date.now()){
+                    tasks[i].completed = true;
+                    console.log(tasks[i].completed)
+                }
+            }
+        }, 1000);
+        // return optional function for cleanup
+        // in this case, this cleanup fn is called every time count changes
+        return () => {
+            console.log("cleanup");
+            clearInterval(interval);
+        }
+    }, [count]);
 
+    function prevMonth(){
+        date.setMonth(date.getMonth() - 1);
+        renderCalendar();
+    }
+    function nextMonth(){
+        date.setMonth(date.getMonth() + 1);
+        renderCalendar();
+    }
+    function prevWeek(){
+        wDate.setDate(wDate.getDate() - 1)
+        renderWeek();
+    }
+    function nextWeek(){
+        wDate.setDate(wDate.getDate() + 7)
+        renderWeek();
+    }
+    function swap(){
+        document.querySelector(".calendar").style.display = "none";
+        document.querySelector(".weekCalendar").style.display = "block";
+        renderWeek();
+    }
+    function swapBack(){
+        document.querySelector(".weekCalendar").style.display = "none";
+        document.querySelector(".calendar").style.display = "block";
+        date = new Date(wDate.getFullYear(), wDate.getMonth(), 1);
+        renderCalendar();
+    }
     function clickModal(e){
         let modal = document.getElementById("myModal");
         modal.style.display = "block";
@@ -65,7 +79,7 @@ function Home(){
     }
     let date = new Date();
     let wDate = new Date();
-    const [tasks, setTasks] = useState([])
+
     function renderCalendar(e){
         date.setDate(1);
         const monthDays = document.querySelector(".days");
@@ -222,7 +236,7 @@ function Home(){
             newLi.appendChild(delBtn);
             newLi.appendChild(checkBtn);
             setTasks(prevTasks=>{
-                return [...prevTasks, {name: save, length: parseInt(duration), color: color, end: newDate.getTime()}]
+                return [...prevTasks, {name: save, length: parseInt(duration), color: color, end: newDate.getTime(), completed: false}]
             })
             console.log(tasks);
             modal.style.display = "none";
@@ -265,26 +279,20 @@ function Home(){
             document.querySelector(".graphic").appendChild(value);
         }
     }
-    //check time
-    function isFinished(e){
-        if(e < Date.now())
-            return true;
-        return false;
-    }
         return (
                     <div className="container">
                         <div className="leftHalf">
                             <div className="calendar">
                                 <div className="swap">
-                                    <button id="swapCal">Week</button>
+                                    <button onClick={swap} id="swapCal">Week</button>
                                 </div>
                                 <div className="month">
-                                    <i className="fas fa-angle-left prev"></i>
+                                    <i onClick={prevMonth} className="fas fa-angle-left prev"></i>
                                     <div className="date">
                                         <h1></h1>
                                         <p></p>
                                     </div>
-                                    <i className="fas fa-angle-right next"></i>
+                                    <i onClick={nextMonth}className="fas fa-angle-right next"></i>
                                 </div>
                                 <div className="weekdays">
                                     <div>Sun</div>
@@ -299,16 +307,16 @@ function Home(){
                             </div>
                             <div className="weekCalendar">
                                 <div className="swapBack">
-                                    <button id="swapCal">Week</button>
+                                    <button onClick={swapBack} id="swapCal">Week</button>
                                 </div>
                                 <div className="week">
-                                    <i className="fas fa-angle-left prev"></i>
+                                    <i onClick={prevWeek} className="fas fa-angle-left prev"></i>
                                     <div className="today">
                                         <h1></h1>
                                         <p></p>
                                         <p className="weekLength"></p>
                                     </div>
-                                    <i className="fas fa-angle-right next"></i>
+                                    <i onClick={nextWeek} className="fas fa-angle-right next"></i>
                                 </div>
                                 <table>
                                     <tbody>
