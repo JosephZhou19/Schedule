@@ -249,7 +249,7 @@ function Home(){
             newLi.appendChild(description);
             newLi.appendChild(delBtn);
             newLi.appendChild(checkBtn);
-            console.log(eventType)
+            console.log(eventType);
             setTasks(prevTasks=>{
                 return [...prevTasks, {name: save, length: parseInt(duration), type: eventType, color: color, start: dateTime, end: newDate, completed: false, delete: false}]
             })
@@ -325,6 +325,17 @@ function Home(){
     }
     // Graphic
     function showGraphic(e){
+        const graphic = document.querySelector(".graphic");
+        while(graphic.firstChild){
+            graphic.removeChild(graphic.firstChild);
+        }
+        const btn = document.createElement("button");
+        btn.innerText = "Visual"
+        btn.id = "retGraphic";
+        btn.addEventListener("click", function(){
+            closeGraphic()
+        });
+        graphic.appendChild(btn);
         for(let i = 0; i < tasks.length; i++){
             console.log(tasks[i]);
             let value = document.createElement("li");
