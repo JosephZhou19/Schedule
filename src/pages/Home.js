@@ -5,22 +5,36 @@ function Home(){
     const todoDate = useRef(null);
     const todoLength = useRef(null);
     const [color, setColor] = useState('');
-    const [tasks, setTasks] = useState([])
+    const [tasks, setTasks] = useState([]);
+    const [eventType, setType] = useState('');
     useEffect(() =>{
         renderCalendar();
         renderWeek();
         const input = document.querySelector(".taskNameAdd");
 
     }, [])
+    useEffect(()=>{
+        showList()
+    }, [tasks])
     const [count, setCount] = useState(0);
     useEffect(() => {
         console.log("useEffect")
+        console.log(tasks)
         const interval = setInterval(function () {
             setCount(count + 1);
             for(let i = 0; i < tasks.length; i++){
+                if(tasks[i].end < Date.now() && tasks[i].end.getDate() !== new Date().getDate()){
+                    tasks[i].delete = true
+                }
+
                 if(tasks[i].completed === false && tasks[i].end < Date.now()){
                     tasks[i].completed = true;
                     console.log(tasks[i].completed)
+                    showList()
+                }
+                if(tasks[i].delete === true){
+                    const newTasks = tasks.filter(task => task.delete === false)
+                    setTasks(newTasks)
                 }
             }
         }, 1000);
@@ -229,14 +243,15 @@ function Home(){
             let newDate = new Date(dateTime.getTime() + parseInt(duration)*3600000);
             time.innerHTML += newDate.toLocaleTimeString()//.substring(newDate.getTime().getIndex('t') + 1);
             console.log(time.innerHTML);
-            notCompleted.appendChild(newLi);
+            //notCompleted.appendChild(newLi);
             newLi.appendChild(time);
             description.innerHTML = document.querySelector(".description > input").value;
             newLi.appendChild(description);
             newLi.appendChild(delBtn);
             newLi.appendChild(checkBtn);
+            console.log(eventType)
             setTasks(prevTasks=>{
-                return [...prevTasks, {name: save, length: parseInt(duration), color: color, end: newDate.getTime(), completed: false}]
+                return [...prevTasks, {name: save, length: parseInt(duration), type: eventType, color: color, start: dateTime, end: newDate, completed: false, delete: false}]
             })
             console.log(tasks);
             modal.style.display = "none";
@@ -247,24 +262,66 @@ function Home(){
         todoTaskName.current.value = null;
         setColor('')
         //Buttons to move the tasks to different places
-        checkBtn.addEventListener("click", function(){
-            const parent = this.parentNode;
-            parent.remove();
-            Completed.appendChild(parent);
-            checkBtn.remove();
-            parent.appendChild(undoBtn);
-        });
-        delBtn.addEventListener("click", function(){
-            const parent = this.parentNode;
-            parent.remove();
-        });
-        undoBtn.addEventListener("click", function(){
-            const parent = this.parentNode;
-            parent.remove();
-            notCompleted.appendChild(parent);
-            undoBtn.remove();
-            parent.appendChild(checkBtn);
-        })
+
+        showList()
+    }
+    function showList(e){
+        const Completed = document.querySelector(".Completed");
+        while(Completed.firstChild){
+            Completed.removeChild(Completed.firstChild);
+        }
+        const notCompleted = document.querySelector(".notCompleted");
+        while(notCompleted.firstChild){
+                notCompleted.removeChild(notCompleted.firstChild);
+        }
+        for(let i = 0; i < tasks.length; i++){
+            const newTask = document.createElement("li");
+            newTask.textContent = tasks[i].name;
+            newTask.style.background = tasks[i].color;
+            const start = tasks[i].start;
+            newTask.textContent += start.toLocaleTimeString() + " - ";
+            const end = tasks[i].end;
+            newTask.textContent += end.toLocaleString();
+            console.log("type " + tasks[i].type)
+            if(tasks[i].type === "Work"){
+                console.log("asdofijasdofijf")
+                const checkBtn = document.createElement("button");
+                const delBtn = document.createElement("button");
+                const undoBtn = document.createElement("button");
+                checkBtn.innerHTML = '<i class="fa fa-check"></i>'
+                delBtn.innerHTML = '<i class="fa fa-trash"></i>'
+                undoBtn.innerHTML = '<i class="fa fa-undo"></i>'
+                newTask.appendChild(delBtn);
+                newTask.appendChild(checkBtn);
+                checkBtn.addEventListener("click", function(){
+                    const parent = this.parentNode;
+                    parent.remove();
+                    Completed.appendChild(parent);
+                    checkBtn.remove();
+                    parent.appendChild(undoBtn);
+                });
+                delBtn.addEventListener("click", function(){
+                    const parent = this.parentNode;
+                    parent.remove();
+                    tasks[i].delete = true;
+                    console.log(tasks)
+                });
+                undoBtn.addEventListener("click", function(){
+                    const parent = this.parentNode;
+                    parent.remove();
+                    notCompleted.appendChild(parent);
+                    undoBtn.remove();
+                    parent.appendChild(checkBtn);
+                })
+            }
+            if(tasks[i].completed === false){
+                notCompleted.appendChild(newTask);
+            }
+            else{
+
+                Completed.appendChild(newTask);
+            }
+        }
     }
     // Graphic
     function showGraphic(e){
@@ -426,10 +483,10 @@ function Home(){
                                                 <input type="text" ref={todoTaskName} className="taskNameAdd" placeholder="Name of task"/>
                                             </div>
                                             <div className="basics">
-                                                <div className="event">
-                                                    <input type="radio" className="taskType" value="Event"/><label
+                                                <div onChange={event => setType(event.target.value)} className="eventType">
+                                                    <input type="radio" checked = {eventType === "Event"} name="eventType" value="Event"/><label
                                                     htmlFor="Event">Event</label>
-                                                    <input type="radio" className="taskType" value="Work"/><label
+                                                    <input type="radio" checked = {eventType === "Work"} name="eventType" value="Work"/><label
                                                     htmlFor="Event">Work</label>
                                                 </div>
                                                 <label htmlFor="dateTime">Date</label><input ref={todoDate} type="datetime-local" className="dateTime"/>
