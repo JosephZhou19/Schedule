@@ -18,30 +18,29 @@ function Home(){
     }, [tasks])
     const [count, setCount] = useState(0);
     useEffect(() => {
-        console.log("useEffect")
-        console.log(tasks)
         const interval = setInterval(function () {
             setCount(count + 1);
             for(let i = 0; i < tasks.length; i++){
-                if(tasks[i].end < Date.now() && tasks[i].end.getDate() !== new Date().getDate()){
+                if(tasks[i].end.getTime() < Date.now() && tasks[i].end.getDate() !== new Date().getDate()){
+
                     tasks[i].delete = true
                 }
 
-                if(tasks[i].completed === false && tasks[i].end < Date.now()){
+                if(tasks[i].completed === false && tasks[i].end.getTime() < Date.now()){
                     tasks[i].completed = true;
                     console.log(tasks[i].completed)
                     showList()
                 }
                 if(tasks[i].delete === true){
-                    const newTasks = tasks.filter(task => task.delete === false)
-                    setTasks(newTasks)
+                    //const newTasks = tasks.filter(task => task.delete === false)
+                    //setTasks(newTasks)
                 }
             }
         }, 1000);
         // return optional function for cleanup
         // in this case, this cleanup fn is called every time count changes
         return () => {
-            console.log("cleanup");
+
             clearInterval(interval);
         }
     }, [count]);
@@ -91,6 +90,39 @@ function Home(){
         document.querySelector(".list").style.display = "block";
         document.querySelector(".graphic").style.display = "none";
     }
+    function addToWeek(initDate, endDate){
+        const table = document.querySelectorAll(".weekCalendar > table > tbody > tr")
+        console.log(initDate)
+        for(let i = 2; i < table.length; i++){
+            console.log(table[i].childElementCount)
+            while(table[i].childElementCount > 1){
+                table[i].removeChild(table[i].lastChild);
+            }
+        }
+        for(let i = 0; i < tasks.length; i++){
+            console.log(tasks[i].start.getDay())
+            if(tasks[i].start > initDate && tasks[i].start < endDate){
+                console.log("goddamnit")
+                for(let j = table[2 + tasks[i].start.getHours()].childElementCount - 1; j < tasks[i].start.getDay(); j++){
+                        table[2 + tasks[i].start.getHours()].appendChild(document.createElement("td"))
+                }
+                let event = document.createElement("td")
+                event.style.background = tasks[i].color
+                event.innerText = tasks[i].name;
+                table[2 + tasks[i].start.getHours()].appendChild(event);
+                for(let k = 1; k < tasks[i].length && k < 24; k++){
+                    for(let j = table[2 + k + tasks[i].start.getHours()].childElementCount - 1; j < tasks[i].start.getDay(); j++){
+                        table[2 + k + tasks[i].start.getHours()].appendChild(document.createElement("td"))
+                    }
+                    let eventBuffer = document.createElement("td")
+                    eventBuffer.style.background = tasks[i].color
+                    console.log(eventBuffer + "dsaoijfsd")
+                    table[2 + k + tasks[i].start.getHours()].appendChild(eventBuffer)
+                }
+            }
+        }
+    }
+
     let date = new Date();
     let wDate = new Date();
 
@@ -101,7 +133,7 @@ function Home(){
         const firstDayIndex = date.getDay();
         const prevLastDay = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
         const lastDayIndex = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDay();
-        const nextDays = 7 - lastDayIndex - 1;
+        const nextDays = 7 - lastDayIndex- 1;
         const months = [
             "January",
             "February",
@@ -212,57 +244,25 @@ function Home(){
         }
         weekDays.innerHTML = days;
         wDate = firstDayIndex;
+        addToWeek(firstDayIndex, new Date(lastDayIndex.getFullYear(), lastDayIndex.getMonth(), lastDayIndex.getDate() + 1))
     };
     function addList(e){
         let modal = document.getElementById("myModal");
-        const input = document.querySelector(".taskNameAdd")
-        const notCompleted = document.querySelector(".notCompleted");
-        const Completed = document.querySelector(".Completed");
-        const newLi = document.createElement("li");
-        const checkBtn = document.createElement("button");
-        const delBtn = document.createElement("button");
-        const undoBtn = document.createElement("button");
-        const time = document.createElement("text");
-        const description = document.createElement("text");
-        checkBtn.innerHTML = '<i class="fa fa-check"></i>'
-        delBtn.innerHTML = '<i class="fa fa-trash"></i>'
-        undoBtn.innerHTML = '<i class="fa fa-undo"></i>'
         if(todoTaskName.current.value !=='' ){
             let save = todoTaskName.current.value
-            console.log(todoTaskName)
-            newLi.textContent = todoTaskName.current.value;
-
-            newLi.style.background = color;
-            console.log(color);
             const dateTime = new Date(todoDate.current.value);
-            console.log(dateTime.toLocaleTimeString())
-            time.innerHTML =dateTime.toLocaleTimeString();//.substring(dateTime.getTime().getIndex('t') + 1);
-            time.innerHTML += "-";
             const duration = todoLength.current.value;
-            console.log(duration)
             let newDate = new Date(dateTime.getTime() + parseInt(duration)*3600000);
-            time.innerHTML += newDate.toLocaleTimeString()//.substring(newDate.getTime().getIndex('t') + 1);
-            console.log(time.innerHTML);
-            //notCompleted.appendChild(newLi);
-            newLi.appendChild(time);
-            description.innerHTML = document.querySelector(".description > input").value;
-            newLi.appendChild(description);
-            newLi.appendChild(delBtn);
-            newLi.appendChild(checkBtn);
-            console.log(eventType);
             setTasks(prevTasks=>{
                 return [...prevTasks, {name: save, length: parseInt(duration), type: eventType, color: color, start: dateTime, end: newDate, completed: false, delete: false}]
             })
-            console.log(tasks);
             modal.style.display = "none";
         }
-        //color.current.value = "";
         todoDate.current.value = null;
         todoLength.current.value = null;
         todoTaskName.current.value = null;
         setColor('')
-        //Buttons to move the tasks to different places
-
+        setType('')
         showList()
     }
     function showList(e){
@@ -333,7 +333,7 @@ function Home(){
         btn.innerText = "Visual"
         btn.id = "retGraphic";
         btn.addEventListener("click", function(){
-            closeGraphic()
+            closeGraphic();
         });
         graphic.appendChild(btn);
         for(let i = 0; i < tasks.length; i++){
@@ -399,7 +399,6 @@ function Home(){
                                         <th>Saturday</th>
                                     </tr>
                                     <tr className="weekDate">
-
                                     </tr>
                                     <tr>
                                         <td>12:00 AM</td>
