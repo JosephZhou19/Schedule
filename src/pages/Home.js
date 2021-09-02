@@ -10,10 +10,11 @@ function Home(){
     useEffect(() =>{
         renderCalendar();
         renderWeek();
-        const input = document.querySelector(".taskNameAdd");
-
     }, [])
     useEffect(()=>{
+        let resort = tasks
+        console.log("woops")
+        setTasks(resort.sort(function(a,b){return a.end.getTime() - b.end.getTime()}))
         showList()
     }, [tasks])
     const [count, setCount] = useState(0);
