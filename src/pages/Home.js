@@ -13,7 +13,6 @@ function Home(){
     }, [])
     useEffect(()=>{
         let resort = tasks
-        console.log("woops")
         setTasks(resort.sort(function(a,b){return a.end.getTime() - b.end.getTime()}))
         showList()
     }, [tasks])
@@ -111,14 +110,22 @@ function Home(){
                 event.style.background = tasks[i].color
                 event.innerText = tasks[i].name;
                 table[2 + tasks[i].start.getHours()].appendChild(event);
-                for(let k = 1; k < tasks[i].length && k < 24; k++){
-                    for(let j = table[2 + k + tasks[i].start.getHours()].childElementCount - 1; j < tasks[i].start.getDay(); j++){
-                        table[2 + k + tasks[i].start.getHours()].appendChild(document.createElement("td"))
+                for(let k = 1; k < tasks[i].length; k++){
+                    if(k + tasks[i].start.getHours() > 23 && tasks[i].start.getDay() +  1 !== endDate.getDay()){
+                        for(let j = table[2 + (k + tasks[i].start.getHours()) % 24].childElementCount - 1; j < tasks[i].start.getDay() + 1; j++){
+                            table[2 + (k + tasks[i].start.getHours()) % 24].appendChild(document.createElement("td"))
+                        }
+                    }
+                    else {
+                        for (let j = table[2 + k + tasks[i].start.getHours()].childElementCount - 1; j < tasks[i].start.getDay(); j++) {
+                            table[2 + k + tasks[i].start.getHours()].appendChild(document.createElement("td"))
+                        }
                     }
                     let eventBuffer = document.createElement("td")
                     eventBuffer.style.background = tasks[i].color
                     console.log(eventBuffer + "dsaoijfsd")
-                    table[2 + k + tasks[i].start.getHours()].appendChild(eventBuffer)
+                    table[2 + (k + tasks[i].start.getHours()) % 24].appendChild(eventBuffer)
+
                 }
             }
         }
@@ -268,12 +275,12 @@ function Home(){
     }
     function showList(e){
         const Completed = document.querySelector(".Completed");
-        while(Completed.firstChild){
-            Completed.removeChild(Completed.firstChild);
+        while(Completed.childElementCount > 1){
+            Completed.removeChild(Completed.lastChild);
         }
         const notCompleted = document.querySelector(".notCompleted");
-        while(notCompleted.firstChild){
-                notCompleted.removeChild(notCompleted.firstChild);
+        while(notCompleted.childElementCount > 1){
+                notCompleted.removeChild(notCompleted.lastChild);
         }
         for(let i = 0; i < tasks.length; i++){
             const newTask = document.createElement("li");
@@ -472,9 +479,6 @@ function Home(){
                                     </tr>
                                     <tr>
                                         <td>11:00 PM</td>
-                                    </tr>
-                                    <tr>
-                                        <td>12:00 AM</td>
                                     </tr>
                                     </tbody>
                                 </table>
