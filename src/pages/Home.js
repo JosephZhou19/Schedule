@@ -1,12 +1,16 @@
 import React, {useState, useRef, useEffect} from 'react';
 
 function Home(){
+    let date = new Date();
+    let wDate = new Date();
     const todoTaskName = useRef(null)
     const todoDate = useRef(null);
     const todoLength = useRef(null);
     const [color, setColor] = useState('');
     const [tasks, setTasks] = useState([]);
     const [eventType, setType] = useState('');
+    const [repeatType, setRepeat] = useState('Never');
+    const endDate = useRef(null);
     useEffect(() =>{
         renderCalendar();
         renderWeek();
@@ -14,6 +18,7 @@ function Home(){
     useEffect(()=>{
         let resort = tasks
         setTasks(resort.sort(function(a,b){return a.end.getTime() - b.end.getTime()}))
+        console.log(tasks)
         showList()
     }, [tasks])
     const [count, setCount] = useState(0);
@@ -58,7 +63,9 @@ function Home(){
         renderWeek();
     }
     function nextWeek(){
+        console.log(wDate)
         wDate.setDate(wDate.getDate() + 7)
+        console.log(wDate)
         renderWeek();
     }
     function swap(){
@@ -92,7 +99,6 @@ function Home(){
     }
     function addToWeek(initDate, endDate){
         const table = document.querySelectorAll(".weekCalendar > table > tbody > tr")
-        console.log(initDate)
         for(let i = 2; i < table.length; i++){
             console.log(table[i].childElementCount)
             while(table[i].childElementCount > 1){
@@ -100,8 +106,7 @@ function Home(){
             }
         }
         for(let i = 0; i < tasks.length; i++){
-            console.log(tasks[i].start.getDay())
-            if(tasks[i].start > initDate && tasks[i].start < endDate){
+            if(tasks[i].start > initDate && tasks[i].start < endDate && tasks[i].type === "Event"){
                 console.log("goddamnit")
                 for(let j = table[2 + tasks[i].start.getHours()].childElementCount - 1; j < tasks[i].start.getDay(); j++){
                         table[2 + tasks[i].start.getHours()].appendChild(document.createElement("td"))
@@ -125,14 +130,12 @@ function Home(){
                     eventBuffer.style.background = tasks[i].color
                     console.log(eventBuffer + "dsaoijfsd")
                     table[2 + (k + tasks[i].start.getHours()) % 24].appendChild(eventBuffer)
-
                 }
             }
         }
     }
 
-    let date = new Date();
-    let wDate = new Date();
+
 
     function renderCalendar(e){
         date.setDate(1);
@@ -245,13 +248,15 @@ function Home(){
             }
         }
         document.querySelector(".weekLength").innerHTML = firstDayIndex.toDateString() + " - " + lastDayIndex.toDateString();
+        console.log(wDate)
         wDate = firstDayIndex;
         while(wDate.getDate() != lastDayIndex.getDate()){
             days += `<th>${wDate.getDate()}</th>`
             wDate = new Date(wDate.getFullYear(), wDate.getMonth(), wDate.getDate() + 1);
         }
-        weekDays.innerHTML = days;
         wDate = firstDayIndex;
+        weekDays.innerHTML = days;
+        console.log(wDate)
         addToWeek(firstDayIndex, new Date(lastDayIndex.getFullYear(), lastDayIndex.getMonth(), lastDayIndex.getDate() + 1))
     };
     function addList(e){
@@ -260,10 +265,49 @@ function Home(){
             let save = todoTaskName.current.value
             const dateTime = new Date(todoDate.current.value);
             const duration = todoLength.current.value;
-            let newDate = new Date(dateTime.getTime() + parseInt(duration)*3600000);
-            setTasks(prevTasks=>{
-                return [...prevTasks, {name: save, length: parseInt(duration), type: eventType, color: color, start: dateTime, end: newDate, completed: false, delete: false}]
-            })
+            let newDate = new Date(dateTime.getTime() + parseInt(duration) * 3600000);
+            let repeatDate = dateTime;
+            console.log(endDate.current.value)
+            let end = new Date(endDate.current.value)
+            let newTasks = tasks;
+            if(endDate.current.value === ''){
+                setTasks(prevTasks=>{
+                    return [...prevTasks, {name: save, length: parseInt(duration), type: eventType, color: color, start: dateTime, end: newDate, completed: false, delete: false}]
+                })
+            }
+            while(repeatDate.getTime() < end.getTime()){
+                let repeat;
+                let end;
+                console.log("did this work")
+                if(repeatType === "Daily"){
+                    repeatDate.setDate(repeatDate.getDate() + 1)
+                    newDate.setDate(newDate.getDate() + 1)
+                }
+                else if(repeatType ==="Weekly"){
+                    repeatDate.setDate(repeatDate.getDate() + 7)
+                    newDate.setDate(newDate.getDate() + 7)
+                }
+                else if(repeatType === "Monthly"){
+                    repeatDate.setMonth(repeatDate.getMonth() + 1)
+                    newDate.setDate(newDate.getMonth() + 1)
+                }
+                else if(repeatType === "Yearly"){
+                    repeatDate.setFullYear(repeatDate.getFullYear() + 1)
+                    newDate.setFullYear(newDate.getFullYear() + 1)
+                }
+                else
+                    setTasks(prevTasks=>{
+                        return [...prevTasks, {name: save, length: parseInt(duration), type: eventType, color: color, start: dateTime, end: newDate, completed: false, delete: false}]
+                    })
+                repeat = new Date(repeatDate);
+                end = new Date(newDate)
+                newTasks.push({name: save, length: parseInt(duration), type: eventType, color: color, start: repeat, end: end, completed: false, delete: false})
+            }
+            console.log(newTasks)
+            if(tasks.length !== newTasks.length){
+                console.log("what")
+                setTasks(newTasks)
+            }
             modal.style.display = "none";
         }
         todoDate.current.value = null;
@@ -271,6 +315,7 @@ function Home(){
         todoTaskName.current.value = null;
         setColor('')
         setType('')
+
         showList()
     }
     function showList(e){
@@ -321,6 +366,17 @@ function Home(){
                     undoBtn.remove();
                     parent.appendChild(checkBtn);
                 })
+            }
+            if(tasks[i].type === "Event"){
+                const delBtn = document.createElement("button");
+                delBtn.innerHTML = '<i class="fa fa-trash"></i>'
+                newTask.appendChild(delBtn);
+                delBtn.addEventListener("click", function(){
+                    const parent = this.parentNode;
+                    parent.remove();
+                    tasks[i].delete = true;
+                    console.log(tasks)
+                });
             }
             if(tasks[i].completed === false){
                 notCompleted.appendChild(newTask);
@@ -509,12 +565,12 @@ function Home(){
                                             </div>
                                             <div className="repeats">
                                                 <label htmlFor="repeat">Repeats</label>
-                                                <select className="repeats">
-                                                    <option value="never">Never</option>
-                                                    <option value="week">Once a week</option>
-                                                    <option value="month">Once a month</option>
-                                                    <option value="year">Once a year</option>
-                                                    <option value="custom">Custom</option>
+                                                <select onChange={event => setRepeat(event.target.value)}className="repeats">
+                                                    <option value="Never">Never</option>
+                                                    <option value="Daily">Once a day</option>
+                                                    <option value="Weekly">Once a week</option>
+                                                    <option value="Monthly">Once a month</option>
+                                                    <option value="Yearly">Once a year</option>
                                                 </select>
                                                 <p>Repeat on which days</p>
                                                 <input type="checkbox" value="Sunday"/><label
@@ -531,10 +587,8 @@ function Home(){
                                                 htmlFor="Friday">Friday</label>
                                                 <input type="checkbox" value="Saturday"/><label
                                                 htmlFor="Saturday">Saturday</label>
-                                                <label htmlFor="date">Repeat until what date</label><input type="date"
+                                                <label  htmlFor="date">Repeat until what date</label><input ref={endDate} type="date"
                                                                                                            className="repeatDate"/>
-                                                <label htmlFor="times">Repeat how many times</label><input type="number"
-                                                                                                           className="times"/>
                                             </div>
                                             <div className="description">
                                                 <input type="text" placeholder="Add description"/>
