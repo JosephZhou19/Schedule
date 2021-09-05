@@ -1,8 +1,8 @@
 import React, {useState, useRef, useEffect} from 'react';
 
 function Home(){
-    let date = new Date();
-    let wDate = new Date();
+    const [date, setDate] = useState(new Date())
+    const [wDate, setwDate] = useState(new Date())
     const todoTaskName = useRef(null)
     const todoDate = useRef(null);
     const todoLength = useRef(null);
@@ -52,21 +52,28 @@ function Home(){
 
     function prevMonth(){
         date.setMonth(date.getMonth() - 1);
+
         renderCalendar();
+        const temp = new Date(date)
+        setDate(temp)
     }
     function nextMonth(){
         date.setMonth(date.getMonth() + 1);
         renderCalendar();
+        const temp = new Date(date)
+        setDate(temp)
     }
     function prevWeek(){
         wDate.setDate(wDate.getDate() - 1)
         renderWeek();
+        const temp = new Date(wDate)
+        setwDate(temp)
     }
     function nextWeek(){
-        console.log(wDate)
         wDate.setDate(wDate.getDate() + 7)
-        console.log(wDate)
         renderWeek();
+        const temp = new Date(wDate)
+        setwDate(temp)
     }
     function swap(){
         document.querySelector(".calendar").style.display = "none";
@@ -76,8 +83,12 @@ function Home(){
     function swapBack(){
         document.querySelector(".weekCalendar").style.display = "none";
         document.querySelector(".calendar").style.display = "block";
-        date = new Date(wDate.getFullYear(), wDate.getMonth(), 1);
+        date.setFullYear(wDate.getFullYear())
+        date.setMonth(wDate.getMonth())
+        date.setDate(1)
         renderCalendar();
+        const temp = new Date(date)
+        setDate(temp)
     }
     function clickModal(e){
         let modal = document.getElementById("myModal");
@@ -184,23 +195,36 @@ function Home(){
             x[i].addEventListener("click", ()=>{
                 document.querySelector(".calendar").style.display = "none";
                 document.querySelector(".weekCalendar").style.display = "block";
-                wDate = new Date(date.getFullYear(), date.getMonth(), x[i].innerHTML);
+                wDate.setFullYear(date.getFullYear())
+                wDate.setMonth(date.getMonth())
+                wDate.setDate(x[i].innerHTML)
                 renderWeek();
+                const temp = new Date(wDate)
+                console.log(temp)
+                setwDate(temp)
             });
         }
         document.querySelector(".today").addEventListener("click", ()=>{
             document.querySelector(".calendar").style.display = "none";
             document.querySelector(".weekCalendar").style.display = "block";
-            wDate = new Date(date.getFullYear(), date.getMonth(), document.querySelector(".today").innerHTML);
+            wDate.setFullYear(date.getFullYear())
+            wDate.setMonth(date.getMonth())
+            wDate.setDate(document.querySelector(".today").innerHTML)
             renderWeek();
+            const temp = new Date(wDate)
+            setwDate(temp)
         });
         let y = document.getElementsByClassName("prev-date");
         for(let i = 0; i < y.length; i++){
             y[i].addEventListener("click", ()=>{
                 document.querySelector(".calendar").style.display = "none";
                 document.querySelector(".weekCalendar").style.display = "block";
-                wDate = new Date(date.getFullYear(), date.getMonth() - 1, y[i].innerHTML);
+                wDate.setFullYear(date.getFullYear())
+                wDate.setMonth(date.getMonth() - 1)
+                wDate.setDate(y[i].innerHTML)
                 renderWeek();
+                const temp = new Date(wDate)
+                setwDate(temp)
             });
         }
         let z = document.getElementsByClassName("next-date");
@@ -208,8 +232,12 @@ function Home(){
             z[i].addEventListener("click", ()=>{
                 document.querySelector(".calendar").style.display = "none";
                 document.querySelector(".weekCalendar").style.display = "block";
-                wDate = new Date(date.getFullYear(), date.getMonth() + 1, z[i].innerHTML);
+                wDate.setFullYear(date.getFullYear())
+                wDate.setMonth(date.getMonth() + 1)
+                wDate.setDate(z[i].innerHTML)
                 renderWeek();
+                const temp = new Date(wDate)
+                setwDate(temp)
             });
         }
 
@@ -249,12 +277,14 @@ function Home(){
         }
         document.querySelector(".weekLength").innerHTML = firstDayIndex.toDateString() + " - " + lastDayIndex.toDateString();
         console.log(wDate)
-        wDate = firstDayIndex;
-        while(wDate.getDate() != lastDayIndex.getDate()){
-            days += `<th>${wDate.getDate()}</th>`
-            wDate = new Date(wDate.getFullYear(), wDate.getMonth(), wDate.getDate() + 1);
+        let temp = new Date(firstDayIndex);
+        while(temp.getDate() != lastDayIndex.getDate()){
+            days += `<th>${temp.getDate()}</th>`
+            temp = new Date(temp.getFullYear(), temp.getMonth(), temp.getDate() + 1);
         }
-        wDate = firstDayIndex;
+        wDate.setFullYear(firstDayIndex.getFullYear())
+        wDate.setMonth(firstDayIndex.getMonth())
+        wDate.setDate(firstDayIndex.getDate())
         weekDays.innerHTML = days;
         console.log(wDate)
         addToWeek(firstDayIndex, new Date(lastDayIndex.getFullYear(), lastDayIndex.getMonth(), lastDayIndex.getDate() + 1))
