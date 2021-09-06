@@ -204,7 +204,7 @@ function Home(){
                 setwDate(temp)
             });
         }
-        document.querySelector(".today").addEventListener("click", ()=>{
+        document.querySelector(".wDate").addEventListener("click", ()=>{
             document.querySelector(".calendar").style.display = "none";
             document.querySelector(".weekCalendar").style.display = "block";
             wDate.setFullYear(date.getFullYear())
@@ -263,9 +263,9 @@ function Home(){
             "November",
             "December",
         ];
-        document.querySelector(".today h1").innerHTML = months[wDate.getMonth()];
-        document.querySelector(".today h1").innerHTML += " " + date.getFullYear();
-        document.querySelector(".today p").innerHTML = new Date().toDateString();
+        document.querySelector(".wDate h1").innerHTML = months[wDate.getMonth()];
+        document.querySelector(".wDate h1").innerHTML += " " + date.getFullYear();
+        document.querySelector(".wDate p").innerHTML = new Date().toDateString();
 
         let days = "<th></th>";
         for (let i = 1; i <= lastDay; i++) {
@@ -362,7 +362,7 @@ function Home(){
             newTask.textContent = tasks[i].name;
             newTask.style.background = tasks[i].color;
             const start = tasks[i].start;
-            newTask.textContent += start.toLocaleTimeString() + " - ";
+            newTask.textContent += start.toLocaleString() + " - ";
             const end = tasks[i].end;
             newTask.textContent += end.toLocaleString();
             console.log("type " + tasks[i].type)
@@ -469,11 +469,11 @@ function Home(){
                             </div>
                             <div className="weekCalendar">
                                 <div className="swapBack">
-                                    <button onClick={swapBack} id="swapCal">Week</button>
+                                    <button onClick={swapBack} id="swapCal">Month</button>
                                 </div>
                                 <div className="week">
                                     <i onClick={prevWeek} className="fas fa-angle-left prev"></i>
-                                    <div className="today">
+                                    <div className="wDate">
                                         <h1></h1>
                                         <p></p>
                                         <p className="weekLength"></p>
@@ -484,13 +484,13 @@ function Home(){
                                     <tbody>
                                     <tr>
                                         <th></th>
-                                        <th>Sunday</th>
-                                        <th>Monday</th>
-                                        <th>Tuesday</th>
-                                        <th>Wednesday</th>
-                                        <th>Thursday</th>
-                                        <th>Friday</th>
-                                        <th>Saturday</th>
+                                        <th>Sun</th>
+                                        <th>Mon</th>
+                                        <th>Tues</th>
+                                        <th>Wed</th>
+                                        <th>Thu</th>
+                                        <th>Fri</th>
+                                        <th>Sat</th>
                                     </tr>
                                     <tr className="weekDate">
                                     </tr>
@@ -602,21 +602,7 @@ function Home(){
                                                     <option value="Monthly">Once a month</option>
                                                     <option value="Yearly">Once a year</option>
                                                 </select>
-                                                <p>Repeat on which days</p>
-                                                <input type="checkbox" value="Sunday"/><label
-                                                htmlFor="Sunday">Sunday</label>
-                                                <input type="checkbox" value="Monday"/><label
-                                                htmlFor="Monday">Monday</label>
-                                                <input type="checkbox" value="Tuesday"/><label
-                                                htmlFor="Tuesday">Tuesday</label>
-                                                <input type="checkbox" value="Wednesday"/><label
-                                                htmlFor="Wednesday">Wednesday</label>
-                                                <input type="checkbox" value="Thursday"/><label
-                                                htmlFor="Thursday">Thursday</label>
-                                                <input type="checkbox" value="Friday"/><label
-                                                htmlFor="Friday">Friday</label>
-                                                <input type="checkbox" value="Saturday"/><label
-                                                htmlFor="Saturday">Saturday</label>
+
                                                 <label  htmlFor="date">Repeat until what date</label><input ref={endDate} type="date"
                                                                                                            className="repeatDate"/>
                                             </div>
