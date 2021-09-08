@@ -1,3 +1,7 @@
+SCHEDULE WEBSITE
+This was my attempt at creating a scheduling website before the semester started. Originally was only supposed to be designed in Javascript, but as I came up with more and more functionality I realized I had to swap to Reactjs. Sorry for not being built dynamically, I learned what reactjs was 2 weeks ago.
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
