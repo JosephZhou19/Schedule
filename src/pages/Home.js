@@ -1,6 +1,7 @@
 import React, {useState, useRef, useEffect} from 'react';
-
+const LOCAL_STORAGE_KEY = 'todoList.home'
 function Home(){
+    //List of variables obtained from to do list
     const [date, setDate] = useState(new Date())
     const [wDate, setwDate] = useState(new Date())
     const todoTaskName = useRef(null)
@@ -11,16 +12,31 @@ function Home(){
     const [eventType, setType] = useState('');
     const [repeatType, setRepeat] = useState('Never');
     const endDate = useRef(null);
+
+
+
+
+    //Checks if there is any local storage then renders the calendars
     useEffect(() =>{
+        /*const storedTodos= JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))
+        if(storedTodos)
+            setTasks(storedTodos)*/
         renderCalendar();
         renderWeek();
     }, [])
+
+    //Sorts the task list based on times
     useEffect(()=>{
         let resort = tasks
         setTasks(resort.sort(function(a,b){return a.end.getTime() - b.end.getTime()}))
         console.log(tasks)
         showList()
+
+        //Saves information onto the local storage
+        //localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(tasks))
     }, [tasks])
+
+    //Checks if tasks need updating every second
     const [count, setCount] = useState(0);
     useEffect(() => {
         const interval = setInterval(function () {
@@ -50,6 +66,7 @@ function Home(){
         }
     }, [count]);
 
+    //Functions to update calendar basd
     function prevMonth(){
         date.setMonth(date.getMonth() - 1);
 
@@ -75,6 +92,9 @@ function Home(){
         const temp = new Date(wDate)
         setwDate(temp)
     }
+
+
+    //Swap the calendar using the swap button
     function swap(){
         document.querySelector(".calendar").style.display = "none";
         document.querySelector(".weekCalendar").style.display = "block";
@@ -90,6 +110,8 @@ function Home(){
         const temp = new Date(date)
         setDate(temp)
     }
+
+    //Clicking the add button
     function clickModal(e){
         let modal = document.getElementById("myModal");
         modal.style.display = "block";
@@ -98,6 +120,8 @@ function Home(){
         let modal = document.getElementById("myModal");
         modal.style.display = "none";
     }
+
+    //Show the day to day graph
     function showGraph(e){
         document.querySelector(".list").style.display = "none";
         document.querySelector(".graphic").style.display = "block";
@@ -108,6 +132,8 @@ function Home(){
         document.querySelector(".list").style.display = "block";
         document.querySelector(".graphic").style.display = "none";
     }
+
+    //Adds events in the todolist to the weekly calendar
     function addToWeek(initDate, endDate){
         const table = document.querySelectorAll(".weekCalendar > table > tbody > tr")
         for(let i = 2; i < table.length; i++){
@@ -147,7 +173,7 @@ function Home(){
     }
 
 
-
+    //renders the calendar and all the dates for each month
     function renderCalendar(e){
         date.setDate(1);
         const monthDays = document.querySelector(".days");
@@ -289,6 +315,9 @@ function Home(){
         console.log(wDate)
         addToWeek(firstDayIndex, new Date(lastDayIndex.getFullYear(), lastDayIndex.getMonth(), lastDayIndex.getDate() + 1))
     };
+
+
+    //Adds an event or work to the task list
     function addList(e){
         let modal = document.getElementById("myModal");
         if(todoTaskName.current.value !=='' ){
@@ -348,6 +377,8 @@ function Home(){
 
         showList()
     }
+
+    //Shows all events in the list and gives buttons to move/remove them
     function showList(e){
         const Completed = document.querySelector(".Completed");
         while(Completed.childElementCount > 1){
@@ -417,7 +448,8 @@ function Home(){
             }
         }
     }
-    // Graphic
+
+    //Actually shows the day to day work length
     function showGraphic(e){
         const graphic = document.querySelector(".graphic");
         while(graphic.firstChild){
@@ -441,6 +473,7 @@ function Home(){
             document.querySelector(".graphic").appendChild(value);
         }
     }
+    //Returns all the general html of the project
         return (
                     <div className="container">
                         <div className="leftHalf">
